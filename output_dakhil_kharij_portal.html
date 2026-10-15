@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>दाखिल-खारिज ऑनलाइन पोर्टल | विकासखंड साजा</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- SheetJS (XLSX) for Excel upload -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', 'Tiro Devanagari Hindi', sans-serif;
+            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+        .hindi-text {
+            font-family: 'Tiro Devanagari Hindi', serif;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+        }
+        .portal-btn {
+            transition: all 0.3s ease;
+        }
+        .portal-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.15);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="text-slate-800 flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-900 via-indigo-800 to-sky-900 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchPortal('home')">
+                <div class="bg-white/10 p-2 rounded-lg border border-white/20">
+                    <i class="fa-solid me-1 fa-book-bookmark text-amber-400 text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold tracking-wide text-white">दाखिल-खारिज डिजिटल पोर्टल</h1>
+                    <p class="text-xs text-sky-200">शासकीय शालाएं - विकासखंड साजा (बेमेतरा)</p>
+                </div>
+            </div>
+            <div id="userHeaderInfo" class="hidden flex items-center space-x-3">
+                <span id="roleBadge" class="px-3 py-1 bg-amber-400 text-slate-900 font-semibold text-xs rounded-full shadow"></span>
+                <button onclick="logout()" class="bg-red-500/80 hover:bg-red-600 text-white text-xs px-3 py-1.5 rounded-lg transition flex items-center gap-1">
+                    <i class="fa-solid fa-right-from-bracket"></i> लॉगआउट
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full">
+
+        <!-- DASHBOARD ROLE SELECTION PAGE (HOMEPAGE) -->
+        <div id="homePage" class="space-y-8">
+            <div class="text-center space-y-2 py-4">
+                <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full border border-blue-200">ऑनलाइन रिकॉर्ड प्रबंधन प्रणाली</span>
+                <h2 class="text-2xl md:text-4xl font-extrabold text-slate-900 hindi-text">अपना पोर्टल चुनें</h2>
+                <p class="text-slate-600 text-sm md:text-base max-full mx-auto">विद्यार्थी दाखिल-खारिज अभिलेख देखने, दर्ज करने एवं प्रबंधित करने हेतु अपना वर्ग चुनें</p>
+            </div>
+
+            <!-- 3 Main Portal Columns -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                
+                <!-- 1. USER PORTAL CARD -->
+                <div onclick="openLoginModal('user')" class="glass-card rounded-2xl p-6 text-center cursor-pointer portal-btn border-t-4 border-emerald-500 hover:border-emerald-600 flex flex-col justify-between">
+                    <div>
+                        <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl shadow-inner">
+                            <i class="fa-solid fa-user-graduate"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-2">1. यूजर पोर्टल</h3>
+                        <p class="text-slate-600 text-xs leading-relaxed mb-4">विद्यार्थी/अभिभावक मोबाइल नंबर से लॉगिन कर दाखिल-खारिज पीडीएफ खोजें एवं डाउनलोड करें।</p>
+                    </div>
+                    <button class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl font-medium text-sm transition shadow-md flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass"></i> खोजें एवं डाउनलोड करें
+                    </button>
+                </div>
+
+                <!-- 2. HM PORTAL CARD -->
+                <div onclick="openLoginModal('hm')" class="glass-card rounded-2xl p-6 text-center cursor-pointer portal-btn border-t-4 border-indigo-500 hover:border-indigo-600 flex flex-col justify-between">
+                    <div>
+                        <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl shadow-inner">
+                            <i class="fa-solid fa-chalkboard-user"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-2">2. हेडमास्टर (HM)</h3>
+                        <p class="text-slate-600 text-xs leading-relaxed mb-4">प्रधान पाठक अपने रजिस्टर्ड मोबाइल नंबर OTP से लॉगिन कर नए दाखिल खारिज एंट्री एवं पीडीएफ अपलोड करें।</p>
+                    </div>
+                    <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl font-medium text-sm transition shadow-md flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-file-arrow-up"></i> प्रविष्टि एवं पीडीएफ अपलोड
+                    </button>
+                </div>
+
+                <!-- 3. ADMIN PORTAL CARD -->
+                <div onclick="openLoginModal('admin')" class="glass-card rounded-2xl p-6 text-center cursor-pointer portal-btn border-t-4 border-amber-500 hover:border-amber-600 flex flex-col justify-between">
+                    <div>
+                        <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl shadow-inner">
+                            <i class="fa-solid fa-user-shield"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-2">3. एडमिन डैशबोर्ड</h3>
+                        <p class="text-slate-600 text-xs leading-relaxed mb-4">मुख्य एडमिन एवं अन्य एडमिन एचएम एंट्री, बल्क एक्सेल अपलोड एवं अन्य एडमिन प्रबंधन करें।</p>
+                    </div>
+                    <button class="w-full bg-amber-600 hover:bg-amber-700 text-white py-2.5 rounded-xl font-medium text-sm transition shadow-md flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-lock"></i> एडमिन लॉगिन
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Quick Info Banner -->
+            <div class="max-w-5xl mx-auto glass-card rounded-2xl p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex items-center space-x-3">
+                    <div class="p-3 bg-blue-600 text-white rounded-xl">
+                        <i class="fa-solid fa-shield-halved text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-900 text-sm">मुख्य एडमिन: संजय कुमार साहू</h4>
+                        <p class="text-xs text-slate-600">सुपर एडमिन संपर्क: +91 9630273317 | ब्लॉक साजा (छत्तीसगढ़)</p>
+                    </div>
+                </div>
+                <div class="text-xs text-slate-500 bg-white px-3 py-1.5 rounded-lg border border-slate-200">
+                    <i class="fa-solid fa-circle text-emerald-500 text-[10px] me-1"></i> रियल टाइम डेटा सिंक एक्टिव
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== USER PORTAL PAGE ==================== -->
+        <div id="userPage" class="hidden space-y-6">
+            <div class="flex items-center justify-between bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-800"><i class="fa-solid fa-magnifying-glass text-emerald-600 me-2"></i>दाखिल-खारिज रिकॉर्ड खोजें</h2>
+                    <p class="text-xs text-slate-500">शाला एवं विद्यार्थी का नाम दर्ज कर रिकॉर्ड पीडीएफ देखें व डाउनलोड करें</p>
+                </div>
+                <button onclick="switchPortal('home')" class="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg font-medium text-slate-700">
+                    <i class="fa-solid fa-arrow-left"></i> मुख्य पृष्ठ
+                </button>
+            </div>
+
+            <!-- Search Form -->
+            <div class="glass-card rounded-2xl p-6 border border-slate-200">
+                <form id="searchStudentForm" onsubmit="searchStudents(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">1. विकासखंड (Block)</label>
+                        <input type="text" value="साजा" readonly class="w-full bg-slate-100 border border-slate-300 rounded-lg p-2.5 text-sm font-medium text-slate-600 cursor-not-allowed">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">2. संकुल का नाम</label>
+                        <select id="userSearchCluster" onchange="populateUserSchools()" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500">
+                            <option value="">-- सभी संकुल --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">3. शाला का नाम</label>
+                        <select id="userSearchSchool" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500">
+                            <option value="">-- सभी शालाएं --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">4. UDISE कोड (वैकल्पिक)</label>
+                        <input type="text" id="userSearchUdise" placeholder="UDISE कोड दर्ज करें..." class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">5. विद्यार्थी का नाम / दाखिल क्र.</label>
+                        <input type="text" id="userSearchName" placeholder="विद्यार्थी का नाम या दाखिल क्र..." class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                    <div class="flex items-end">
+                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium p-2.5 rounded-lg text-sm transition shadow flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-magnifying-glass"></i> खोजें (Search)
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Search Results -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                <div class="flex justify-between items-center border-b pb-3">
+                    <h3 class="font-bold text-slate-800 text-base">खोज परिणाम (Search Results)</h3>
+                    <span id="resultCount" class="text-xs font-semibold bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full">0 रिकॉर्ड मिले</span>
+                </div>
+
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 uppercase tracking-wider border-b">
+                                <th class="p-3">दाखिल क्र.</th>
+                                <th class="p-3">विद्यार्थी का नाम</th>
+                                <th class="p-3">माता/पिता का नाम</th>
+                                <th class="p-3">जाति / वर्ग</th>
+                                <th class="p-3">जन्मतिथि</th>
+                                <th class="p-3">शाला का नाम</th>
+                                <th class="p-3">पीडीएफ क्र.</th>
+                                <th class="p-3 text-center">अभिलेख</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentResultsTable" class="divide-y divide-slate-100">
+                            <tr>
+                                <td colspan="8" class="text-center py-8 text-slate-400">खोजने के लिए फॉर्म भरें एवं 'खोजें' बटन पर क्लिक करें।</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== HM PORTAL PAGE ==================== -->
+        <div id="hmPage" class="hidden space-y-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-4 rounded-xl shadow-sm border border-slate-200 gap-2">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-800"><i class="fa-solid fa-chalkboard-user text-indigo-600 me-2"></i>प्रधान पाठक (HM) डैशबोर्ड</h2>
+                    <p class="text-xs text-slate-500">शाला: <span id="hmSchoolName" class="font-semibold text-indigo-700"></span> | संकुल: <span id="hmClusterName" class="font-semibold text-indigo-700"></span></p>
+                </div>
+                <button onclick="openAddStudentModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium px-4 py-2 rounded-lg transition shadow flex items-center gap-1.5">
+                    <i class="fa-solid fa-plus-circle text-sm"></i> नया दाखिल खारिज दर्ज करें
+                </button>
+            </div>
+
+            <!-- HM's Uploaded Students Records -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                <div class="flex justify-between items-center border-b pb-3">
+                    <h3 class="font-bold text-slate-800 text-base">आपकी शाला के दाखिल-खारिज अभिलेख</h3>
+                    <input type="text" id="hmRecordFilter" onkeyup="filterHMTable()" placeholder="रिकॉर्ड फ़िल्टर करें..." class="text-xs border rounded-lg px-3 py-1.5 w-48">
+                </div>
+
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 border-b">
+                                <th class="p-3">दाखिल क्र.</th>
+                                <th class="p-3">विद्यार्थी का नाम</th>
+                                <th class="p-3">पिता का नाम</th>
+                                <th class="p-3">माता का नाम</th>
+                                <th class="p-3">जाति / वर्ग</th>
+                                <th class="p-3">जन्मतिथि</th>
+                                <th class="p-3">पीडीएफ क्र.</th>
+                                <th class="p-3 text-center">ऑप्शन</th>
+                            </tr>
+                        </thead>
+                        <tbody id="hmStudentsTable" class="divide-y divide-slate-100">
+                            <!-- JS Filled -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== ADMIN PORTAL PAGE ==================== -->
+        <div id="adminPage" class="hidden space-y-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-4 rounded-xl shadow-sm border border-slate-200 gap-2">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-800"><i class="fa-solid fa-user-shield text-amber-600 me-2"></i>एडमिन डैशबोर्ड (विकासखंड साजा)</h2>
+                    <p class="text-xs text-slate-500">लॉगिन यूजर: <span id="adminLoggedInName" class="font-semibold text-amber-700"></span> (<span id="adminLoggedInRole"></span>)</p>
+                </div>
+                <div class="flex gap-2">
+                    <button id="addAdminBtn" onclick="openAddAdminModal()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-medium px-3 py-2 rounded-lg transition shadow flex items-center gap-1">
+                        <i class="fa-solid fa-user-plus"></i> नया एडमिन जोड़ें
+                    </button>
+                    <button onclick="openAddHMModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium px-3 py-2 rounded-lg transition shadow flex items-center gap-1">
+                        <i class="fa-solid fa-plus"></i> नया HM जोड़ें
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                    <p class="text-xs text-slate-500 font-medium">कुल एडमिन</p>
+                    <h4 id="statAdminCount" class="text-2xl font-bold text-slate-800">0</h4>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                    <p class="text-xs text-slate-500 font-medium">कुल हेडमास्टर (HM)</p>
+                    <h4 id="statHMCount" class="text-2xl font-bold text-indigo-600">0</h4>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                    <p class="text-xs text-slate-500 font-medium">कुल शालाएं</p>
+                    <h4 id="statSchoolCount" class="text-2xl font-bold text-emerald-600">0</h4>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                    <p class="text-xs text-slate-500 font-medium">कुल दाखिला रिकॉर्ड</p>
+                    <h4 id="statStudentCount" class="text-2xl font-bold text-amber-600">0</h4>
+                </div>
+            </div>
+
+            <!-- Tabbed Navigation inside Admin -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                <div class="flex border-b text-sm font-medium gap-4">
+                    <button onclick="switchAdminTab('hms')" id="tabBtnHMs" class="pb-2 border-b-2 border-indigo-600 text-indigo-600 font-bold">हेडमास्टर (HM) सूची</button>
+                    <button onclick="switchAdminTab('admins')" id="tabBtnAdmins" class="pb-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700">एडमिन सूची</button>
+                    <button onclick="switchAdminTab('records')" id="tabBtnRecords" class="pb-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700">समस्त छात्र रिकॉर्ड्स</button>
+                    <button onclick="switchAdminTab('excel')" id="tabBtnExcel" class="pb-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700">एक्सेल (Excel) बल्क अपलोड</button>
+                </div>
+
+                <!-- ADMIN SUB TAB 1: HM LIST -->
+                <div id="adminTabHMs" class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h4 class="font-bold text-slate-800 text-sm">विकासखंड साजा के सभी पंजीकृत हेडमास्टर</h4>
+                        <input type="text" id="adminHMFilter" onkeyup="filterAdminHMTable()" placeholder="HM / शाला खोजें..." class="text-xs border rounded-lg px-3 py-1.5 w-48">
+                    </div>
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 border-b">
+                                    <th class="p-3">विकासखंड</th>
+                                    <th class="p-3">संकुल</th>
+                                    <th class="p-3">शाला का नाम</th>
+                                    <th class="p-3">प्रधान पाठक का नाम</th>
+                                    <th class="p-3">मोबाइल नंबर</th>
+                                    <th class="p-3 text-center">हटाएं</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminHMTable" class="divide-y divide-slate-100">
+                                <!-- JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ADMIN SUB TAB 2: ADMINS LIST -->
+                <div id="adminTabAdmins" class="hidden space-y-4">
+                    <h4 class="font-bold text-slate-800 text-sm">सिस्टम एडमिनिस्ट्रेटर्स</h4>
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 border-b">
+                                    <th class="p-3">नाम</th>
+                                    <th class="p-3">मोबाइल नंबर</th>
+                                    <th class="p-3">पद / रोल</th>
+                                    <th class="p-3 text-center">कार्रवाई</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminAdminsTable" class="divide-y divide-slate-100">
+                                <!-- JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ADMIN SUB TAB 3: ALL RECORDS -->
+                <div id="adminTabRecords" class="hidden space-y-4">
+                    <h4 class="font-bold text-slate-800 text-sm">विकासखंड के सभी दाखिल खारिज अपलोड्स</h4>
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 border-b">
+                                    <th class="p-3">संकुल / शाला</th>
+                                    <th class="p-3">दाखिल क्र.</th>
+                                    <th class="p-3">विद्यार्थी नाम</th>
+                                    <th class="p-3">पिता का नाम</th>
+                                    <th class="p-3">जन्मतिथि</th>
+                                    <th class="p-3">पीडीएफ क्र.</th>
+                                    <th class="p-3 text-center">अभिलेख</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminAllRecordsTable" class="divide-y divide-slate-100">
+                                <!-- JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ADMIN SUB TAB 4: EXCEL BULK UPLOAD -->
+                <div id="adminTabExcel" class="hidden space-y-6">
+                    <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-4 text-xs text-indigo-900 space-y-2">
+                        <h5 class="font-bold text-indigo-950 flex items-center gap-1.5">
+                            <i class="fa-solid fa-file-excel text-base text-emerald-600"></i> Excel (.xls / .xlsx) के माध्यम से एक साथ हेडमास्टर अपलोड करें
+                        </h5>
+                        <p>एक्सेल फ़ाइल की पहली रो (Header) में निम्नलिखित कॉलम होने चाहिए:</p>
+                        <div class="bg-white p-2 rounded border border-indigo-200 font-mono text-[11px] text-slate-700">
+                            Block | Cluster | School | HM_Name | Mobile
+                        </div>
+                        <p class="text-slate-500">* विकासखंड स्वचालित रूप से 'साजा' दर्ज रहेगा।</p>
+                    </div>
+
+                    <div class="border-2 border-dashed border-slate-300 rounded-2xl p-8 text-center bg-slate-50 hover:bg-slate-100 transition cursor-pointer">
+                        <i class="fa-solid fa-cloud-arrow-up text-4xl text-indigo-500 mb-3"></i>
+                        <h4 class="font-bold text-slate-800 text-sm mb-1">एक्सेल फ़ाइल चुनें या यहाँ ड्रैग करें</h4>
+                        <p class="text-xs text-slate-500 mb-4">केवल .xlsx या .xls फ़ाइलें अपलोड करें</p>
+                        <input type="file" id="excelFileInput" accept=".xlsx, .xls" class="hidden" onchange="handleExcelUpload(event)">
+                        <button onclick="document.getElementById('excelFileInput').click()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium px-5 py-2.5 rounded-xl shadow">
+                            <i class="fa-solid fa-folder-open me-1"></i> कंप्यूटर/मोबाइल से फ़ाइल चुनें
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-4 text-center border-t border-slate-800 mt-auto">
+        <p>दाखिल खारिज डिजिटल पोर्टल | विकासखंड साजा, बेमेतरा (छ.ग.)</p>
+        <p class="text-[11px] text-slate-500 mt-1">परिकल्पना एवं मुख्य संचालन: <span class="text-amber-400 font-medium">संजय कुमार साहू</span> (+91 9630273317)</p>
+    </footer>
+
+    <!-- MODALS -->
+
+    <!-- LOGIN / OTP MODAL -->
+    <div id="loginModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 space-y-4 relative">
+            <button onclick="closeModal('loginModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="text-center">
+                <div id="loginModalIcon" class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-2 text-xl">
+                    <i class="fa-solid fa-mobile-screen-button"></i>
+                </div>
+                <h3 id="loginModalTitle" class="font-bold text-slate-800 text-lg">लॉगिन करें</h3>
+                <p class="text-xs text-slate-500">मोबाइल नंबर दर्ज कर OTP से सत्यापन करें</p>
+            </div>
+
+            <!-- Step 1: Mobile Input -->
+            <div id="otpStep1" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">मोबाइल नंबर</label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-2.5 text-xs text-slate-400 font-semibold">+91</span>
+                        <input type="tel" id="loginMobileInput" maxlength="10" placeholder="10 अंकों का नंबर" class="w-full border border-slate-300 rounded-lg py-2 pl-12 pr-3 text-sm focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                </div>
+                <button onclick="sendOTP()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium py-2.5 rounded-lg shadow">
+                    OTP भेजें
+                </button>
+            </div>
+
+            <!-- Step 2: OTP Verification -->
+            <div id="otpStep2" class="hidden space-y-3">
+                <div class="text-center bg-indigo-50 p-2 rounded-lg text-xs text-indigo-800">
+                    ओटीपी <span id="sentMobileDisplay" class="font-bold"></span> पर भेजा गया
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">4-अंकों का OTP दर्ज करें</label>
+                    <input type="text" id="otpInput" maxlength="4" placeholder="1234" class="w-full text-center tracking-widest font-mono text-lg border border-slate-300 rounded-lg py-2 focus:ring-2 focus:ring-indigo-500">
+                    <p class="text-[11px] text-slate-400 text-center mt-1">परीक्षण हेतु डिफॉल्ट OTP: <span class="font-bold text-indigo-600">1234</span></p>
+                </div>
+                <button onclick="verifyOTP()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium py-2.5 rounded-lg shadow">
+                    सत्यापित करें एवं लॉगिन
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD HM MODAL -->
+    <div id="addHMModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-4 relative">
+            <button onclick="closeModal('addHMModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <h3 class="font-bold text-slate-800 text-lg border-b pb-2">नया प्रधान पाठक (HM) जोड़ें</h3>
+            
+            <form onsubmit="saveHM(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">1. विकासखंड का नाम</label>
+                    <input type="text" value="साजा" readonly class="w-full bg-slate-100 border rounded-lg p-2 font-semibold text-slate-600">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">2. संकुल का नाम</label>
+                    <input type="text" id="newHMCluster" required placeholder="जैसे: संकुल मोहतरा" class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">3. शाला का नाम</label>
+                    <input type="text" id="newHMSchool" required placeholder="जैसे: शा.पू.मा. शाला मोहतरा" class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">4. प्रधान पाठक (HM) का नाम</label>
+                    <input type="text" id="newHMName" required placeholder="प्रधान पाठक का नाम..." class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">5. मोबाइल नंबर</label>
+                    <input type="tel" id="newHMMobile" required maxlength="10" placeholder="10 अंकों का मोबाइल नंबर..." class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="closeModal('addHMModal')" class="bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-medium">रद्द करें</button>
+                    <button type="submit" class="bg-indigo-600 text-white px-5 py-2 rounded-lg font-medium shadow hover:bg-indigo-700">सुरक्षित करें</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ADD ADMIN MODAL -->
+    <div id="addAdminModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-4 relative">
+            <button onclick="closeModal('addAdminModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <h3 class="font-bold text-slate-800 text-lg border-b pb-2">नया एडमिन जोड़ें</h3>
+            
+            <form onsubmit="saveAdmin(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">1. एडमिन का नाम</label>
+                    <input type="text" id="newAdminName" required placeholder="नाम दर्ज करें..." class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-amber-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">2. मोबाइल नंबर</label>
+                    <input type="tel" id="newAdminMobile" required maxlength="10" placeholder="10 अंकों का नंबर..." class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-amber-500">
+                </div>
+                <div class="pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="closeModal('addAdminModal')" class="bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-medium">रद्द करें</button>
+                    <button type="submit" class="bg-amber-600 text-white px-5 py-2 rounded-lg font-medium shadow hover:bg-amber-700">सुरक्षित करें</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ADD STUDENT RECORD MODAL (FOR HM) -->
+    <div id="addStudentModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50 overflow-y-auto">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-xl w-full p-6 space-y-4 my-8 relative">
+            <button onclick="closeModal('addStudentModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <h3 class="font-bold text-slate-800 text-lg border-b pb-2">नया दाखिला-खारिज प्रविष्टि दर्ज करें</h3>
+            
+            <form onsubmit="saveStudentRecord(event)" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">1. विकासखंड</label>
+                    <input type="text" value="साजा" readonly class="w-full bg-slate-100 border rounded-lg p-2 text-slate-600 font-semibold">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">2. संकुल का नाम</label>
+                    <input type="text" id="stHMCluster" readonly class="w-full bg-slate-100 border rounded-lg p-2 text-slate-600 font-semibold">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block font-semibold text-slate-700 mb-1">3. शाला का नाम</label>
+                    <input type="text" id="stHMSchool" readonly class="w-full bg-slate-100 border rounded-lg p-2 text-slate-600 font-semibold">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">4. विद्यार्थी का नाम *</label>
+                    <input type="text" id="stName" required placeholder="विद्यार्थी का नाम..." class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">5. पिता का नाम *</label>
+                    <input type="text" id="stFather" required placeholder="पिता का नाम..." class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">6. माता का नाम *</label>
+                    <input type="text" id="stMother" required placeholder="माता का नाम..." class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">7. जाति (Caste)</label>
+                    <input type="text" id="stCaste" placeholder="जैसे: साहू, वर्मा..." class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">8. वर्ग (Category)</label>
+                    <select id="stCategory" class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-indigo-500">
+                        <option value="OBC">अन्य पिछड़ा वर्ग (OBC)</option>
+                        <option value="ST">अनुसूचित जनजाति (ST)</option>
+                        <option value="SC">अनुसूचित जाति (SC)</option>
+                        <option value="GEN">सामान्य (General)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">9. जन्मतिथि (DOB)</label>
+                    <input type="date" id="stDOB" required class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">10. दाखिल क्रमांक *</label>
+                    <input type="text" id="stDakhilNo" required placeholder="दाखिल पंजी क्र..." class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">11. पीडीएफ/पेज क्रमांक</label>
+                    <input type="text" id="stPdfNo" placeholder="जैसे: P-04" class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block font-semibold text-slate-700 mb-1">12. ओरिजिनल दाखिल-खारिज स्कैन (PDF / Photo Upload) *</label>
+                    <input type="file" id="stDocFile" accept="application/pdf, image/*" required class="w-full border rounded-lg p-1.5 text-xs bg-slate-50">
+                    <p class="text-[10px] text-slate-400 mt-1">ओरिजिनल दाखिल-खारिज रजिस्टर का स्कैन पीडीएफ या फोटो चुने।</p>
+                </div>
+
+                <div class="md:col-span-2 pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="closeModal('addStudentModal')" class="bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-medium">रद्द करें</button>
+                    <button type="submit" class="bg-indigo-600 text-white px-5 py-2 rounded-lg font-medium shadow hover:bg-indigo-700">सुरक्षित एवं अपलोड करें</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- VIEW & DOWNLOAD PDF MODAL -->
+    <div id="viewPdfModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full p-6 space-y-4 relative max-h-[90vh] flex flex-col">
+            <button onclick="closeModal('viewPdfModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <div class="border-b pb-2 flex justify-between items-center pr-8">
+                <div>
+                    <h3 id="pdfModalStudentName" class="font-bold text-slate-800 text-lg">विद्यार्थी दाखिल खारिज दस्तावेज</h3>
+                    <p id="pdfModalSchoolInfo" class="text-xs text-slate-500"></p>
+                </div>
+                <a id="pdfDownloadBtn" download="Dakhil_Kharij_Document.pdf" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium px-4 py-2 rounded-lg shadow flex items-center gap-1.5">
+                    <i class="fa-solid fa-download"></i> डाउनलोड पीडीएफ
+                </a>
+            </div>
+
+            <!-- PDF / Image Viewer Container -->
+            <div class="flex-grow bg-slate-100 rounded-xl overflow-hidden min-h-[350px] flex items-center justify-center border">
+                <iframe id="pdfFrame" class="w-full h-[450px] hidden"></iframe>
+                <img id="imagePreview" class="max-h-[450px] object-contain hidden" alt="Document Preview">
+                <div id="noViewerNotice" class="text-slate-400 text-center text-xs p-8 hidden">
+                    <i class="fa-solid fa-file-pdf text-4xl mb-2 text-slate-300"></i>
+                    <p>पूर्वावलोकन उपलब्ध नहीं है। कृपया डाउनलोड बटन पर क्लिक करें।</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- SCRIPT APPLICATION LOGIC -->
+    <script>
+        // DEFAULT INITIAL SYSTEM DATA
+        const CHIEF_ADMIN = {
+            name: "संजय कुमार साहू",
+            mobile: "9630273317",
+            role: "मुख्य एडमिन (Super Admin)"
+        };
+
+        // Local Storage Keys
+        const STORAGE_ADMINS = "dakhil_admins_v1";
+        const STORAGE_HMS = "dakhil_hms_v1";
+        const STORAGE_STUDENTS = "dakhil_students_v1";
+
+        // State Variables
+        let currentRole = null; // 'user', 'hm', 'admin'
+        let currentUser = null;
+        let pendingLoginRole = null;
+        let tempOtpMobile = "";
+
+        // Initialize Data Store
+        function initDataStore() {
+            if (!localStorage.getItem(STORAGE_ADMINS)) {
+                localStorage.setItem(STORAGE_ADMINS, JSON.stringify([CHIEF_ADMIN]));
+            }
+            if (!localStorage.getItem(STORAGE_HMS)) {
+                // Sample HM records
+                const defaultHMs = [
+                    { block: "साजा", cluster: "संकुल मोहतरा", school: "शा.पू.मा. शाला मोहतरा", hmName: "संजय कुमार साहू", mobile: "9630273317" },
+                    { block: "साजा", cluster: "संकुल देवकर", school: "शा. उच्चतर माध्यमिक शाला देवकर", hmName: "राम कुमार वर्मा", mobile: "9827000001" }
+                ];
+                localStorage.setItem(STORAGE_HMS, JSON.stringify(defaultHMs));
+            }
+            if (!localStorage.getItem(STORAGE_STUDENTS)) {
+                const defaultStudents = [
+                    {
+                        block: "साजा",
+                        cluster: "संकुल मोहतरा",
+                        school: "शा.पू.मा. शाला मोहतरा",
+                        stName: "प्रवीन कुमार",
+                        father: "संतोष कुमार",
+                        mother: "श्रीमती सुनीता",
+                        caste: "साहू",
+                        category: "OBC",
+                        dob: "2012-06-15",
+                        dakhilNo: "1024",
+                        pdfNo: "P-01",
+                        docData: "data:application/pdf;base64,JVBERi0xLjQKJ..." // Sample file
+                    }
+                ];
+                localStorage.setItem(STORAGE_STUDENTS, JSON.stringify(defaultStudents));
+            }
+        }
+
+        // Getters & Setters
+        function getAdmins() { return JSON.parse(localStorage.getItem(STORAGE_ADMINS) || "[]"); }
+        function getHMs() { return JSON.parse(localStorage.getItem(STORAGE_HMS) || "[]"); }
+        function getStudents() { return JSON.parse(localStorage.getItem(STORAGE_STUDENTS) || "[]"); }
+
+        function saveAdminsData(data) { localStorage.setItem(STORAGE_ADMINS, JSON.stringify(data)); refreshAdminViews(); }
+        function saveHMsData(data) { localStorage.setItem(STORAGE_HMS, JSON.stringify(data)); refreshAdminViews(); populateUserClusters(); }
+        function saveStudentsData(data) { localStorage.setItem(STORAGE_STUDENTS, JSON.stringify(data)); refreshAdminViews(); }
+
+        // Switch Portals
+        function switchPortal(portal) {
+            document.getElementById('homePage').classList.add('hidden');
+            document.getElementById('userPage').classList.add('hidden');
+            document.getElementById('hmPage').classList.add('hidden');
+            document.getElementById('adminPage').classList.add('hidden');
+
+            if (portal === 'home') {
+                document.getElementById('homePage').classList.remove('hidden');
+                document.getElementById('userHeaderInfo').classList.add('hidden');
+            } else if (portal === 'user') {
+                document.getElementById('userPage').classList.remove('hidden');
+                setupUserHeader("यूजर (User)");
+                populateUserClusters();
+            } else if (portal === 'hm') {
+                document.getElementById('hmPage').classList.remove('hidden');
+                setupUserHeader("हेडमास्टर (HM)");
+                renderHMPage();
+            } else if (portal === 'admin') {
+                document.getElementById('adminPage').classList.remove('hidden');
+                setupUserHeader(currentUser.role || "एडमिन");
+                renderAdminPage();
+            }
+        }
+
+        function setupUserHeader(roleTitle) {
+            const header = document.getElementById('userHeaderInfo');
+            const badge = document.getElementById('roleBadge');
+            badge.innerText = roleTitle;
+            header.classList.remove('hidden');
+        }
+
+        // Login Modal and OTP Handling
+        function openLoginModal(role) {
+            pendingLoginRole = role;
+            tempOtpMobile = "";
+            document.getElementById('otpStep1').classList.remove('hidden');
+            document.getElementById('otpStep2').classList.add('hidden');
+            document.getElementById('loginMobileInput').value = "";
+            document.getElementById('otpInput').value = "";
+
+            const modalTitle = document.getElementById('loginModalTitle');
+            if (role === 'user') modalTitle.innerText = "यूजर मोबाइल OTP लॉगिन";
+            else if (role === 'hm') modalTitle.innerText = "प्रधान पाठक (HM) OTP लॉगिन";
+            else if (role === 'admin') modalTitle.innerText = "एडमिन OTP लॉगिन";
+
+            document.getElementById('loginModal').classList.remove('hidden');
+            document.getElementById('loginModal').classList.add('flex');
+        }
+
+        function sendOTP() {
+            const mobile = document.getElementById('loginMobileInput').value.trim();
+            if (!/^[6-9]\d{9}$/.test(mobile)) {
+                Swal.fire('त्रुटि', 'कृपया सही 10-अंकों का मोबाइल नंबर दर्ज करें।', 'error');
+                return;
+            }
+
+            // Role Verification Checks
+            if (pendingLoginRole === 'admin') {
+                const admins = getAdmins();
+                const foundAdmin = admins.find(a => a.mobile === mobile);
+                if (!foundAdmin) {
+                    Swal.fire('अनुमति नहीं', 'यह मोबाइल नंबर एडमिन सूची में पंजीकृत नहीं है।', 'warning');
+                    return;
+                }
+            } else if (pendingLoginRole === 'hm') {
+                const hms = getHMs();
+                const foundHM = hms.find(h => h.mobile === mobile);
+                if (!foundHM) {
+                    Swal.fire('अनुमति नहीं', 'यह मोबाइल नंबर किसी प्रधान पाठक (HM) के रूप में दर्ज नहीं है।', 'warning');
+                    return;
+                }
+            }
+
+            tempOtpMobile = mobile;
+            document.getElementById('sentMobileDisplay').innerText = "+91 " + mobile;
+            document.getElementById('otpStep1').classList.add('hidden');
+            document.getElementById('otpStep2').classList.remove('hidden');
+            Swal.fire({
+                title: 'OTP भेजा गया!',
+                text: 'परीक्षण हेतु OTP: 1234 दर्ज करें।',
+                icon: 'success',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+
+        function verifyOTP() {
+            const otp = document.getElementById('otpInput').value.trim();
+            if (otp !== "1234") {
+                Swal.fire('गलत OTP', 'कृपया सही 4-अंकों का OTP दर्ज करें (1234)', 'error');
+                return;
+            }
+
+            // OTP verified successfully
+            closeModal('loginModal');
+
+            if (pendingLoginRole === 'admin') {
+                const admins = getAdmins();
+                currentUser = admins.find(a => a.mobile === tempOtpMobile);
+                currentRole = 'admin';
+                switchPortal('admin');
+            } else if (pendingLoginRole === 'hm') {
+                const hms = getHMs();
+                currentUser = hms.find(h => h.mobile === tempOtpMobile);
+                currentRole = 'hm';
+                switchPortal('hm');
+            } else {
+                currentUser = { mobile: tempOtpMobile, role: "यूजर" };
+                currentRole = 'user';
+                switchPortal('user');
+            }
+
+            Swal.fire('सफल लॉगिन', 'दाखिल-खारिज पोर्टल में आपका स्वागत है!', 'success');
+        }
+
+        function logout() {
+            currentUser = null;
+            currentRole = null;
+            switchPortal('home');
+            Swal.fire('लॉगआउट', 'आप सफलतापूर्वक लॉगआउट हो चुके हैं।', 'info');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+            document.getElementById(id).classList.remove('flex');
+        }
+
+        // ================= USER PORTAL FUNCTIONS =================
+        function populateUserClusters() {
+            const hms = getHMs();
+            const clusterSelect = document.getElementById('userSearchCluster');
+            const clusters = [...new Set(hms.map(h => h.cluster))];
+
+            clusterSelect.innerHTML = '<option value="">-- सभी संकुल --</option>';
+            clusters.forEach(c => {
+                clusterSelect.innerHTML += `<option value="${c}">${c}</option>`;
+            });
+        }
+
+        function populateUserSchools() {
+            const selectedCluster = document.getElementById('userSearchCluster').value;
+            const hms = getHMs();
+            const schoolSelect = document.getElementById('userSearchSchool');
+
+            const filteredHMs = selectedCluster ? hms.filter(h => h.cluster === selectedCluster) : hms;
+            const schools = [...new Set(filteredHMs.map(h => h.school))];
+
+            schoolSelect.innerHTML = '<option value="">-- सभी शालाएं --</option>';
+            schools.forEach(s => {
+                schoolSelect.innerHTML += `<option value="${s}">${s}</option>`;
+            });
+        }
+
+        function searchStudents(e) {
+            if(e) e.preventDefault();
+            const cluster = document.getElementById('userSearchCluster').value;
+            const school = document.getElementById('userSearchSchool').value;
+            const query = document.getElementById('userSearchName').value.trim().toLowerCase();
+
+            const students = getStudents();
+            const results = students.filter(st => {
+                const matchCluster = !cluster || st.cluster === cluster;
+                const matchSchool = !school || st.school === school;
+                const matchQuery = !query || 
+                    st.stName.toLowerCase().includes(query) || 
+                    st.father.toLowerCase().includes(query) || 
+                    st.dakhilNo.toLowerCase().includes(query);
+
+                return matchCluster && matchSchool && matchQuery;
+            });
+
+            renderStudentResultsTable(results);
+        }
+
+        function renderStudentResultsTable(list) {
+            const tbody = document.getElementById('studentResultsTable');
+            document.getElementById('resultCount').innerText = `${list.length} रिकॉर्ड मिले`;
+
+            if (list.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center py-6 text-slate-400">कोई रिकॉर्ड प्राप्त नहीं हुआ।</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = list.map((st, index) => `
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="p-3 font-bold text-slate-800">${st.dakhilNo}</td>
+                    <td class="p-3 font-semibold text-emerald-700">${st.stName}</td>
+                    <td class="p-3 text-slate-600">${st.father} / ${st.mother}</td>
+                    <td class="p-3 text-slate-600">${st.caste || '-'} (${st.category || '-'})</td>
+                    <td class="p-3 text-slate-600">${st.dob || '-'}</td>
+                    <td class="p-3 text-slate-600">${st.school}</td>
+                    <td class="p-3 text-slate-500 font-mono">${st.pdfNo || '-'}</td>
+                    <td class="p-3 text-center">
+                        <button onclick="viewStudentPdf(${index})" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] px-2.5 py-1 rounded shadow flex items-center gap-1 mx-auto">
+                            <i class="fa-solid fa-eye"></i> देखें / डाउनलोड
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function viewStudentPdf(index) {
+            const students = getStudents();
+            const st = students[index];
+
+            document.getElementById('pdfModalStudentName').innerText = `${st.stName} (दाखिल क्र. ${st.dakhilNo})`;
+            document.getElementById('pdfModalSchoolInfo').innerText = `${st.school} | ${st.cluster}`;
+            
+            const frame = document.getElementById('pdfFrame');
+            const img = document.getElementById('imagePreview');
+            const noViewer = document.getElementById('noViewerNotice');
+            const downloadBtn = document.getElementById('pdfDownloadBtn');
+
+            frame.classList.add('hidden');
+            img.classList.add('hidden');
+            noViewer.classList.add('hidden');
+
+            if (st.docData) {
+                downloadBtn.href = st.docData;
+                downloadBtn.download = `Dakhil_Kharij_${st.stName}_${st.dakhilNo}.pdf`;
+
+                if (st.docData.startsWith("data:application/pdf")) {
+                    frame.src = st.docData;
+                    frame.classList.remove('hidden');
+                } else if (st.docData.startsWith("data:image")) {
+                    img.src = st.docData;
+                    img.classList.remove('hidden');
+                } else {
+                    noViewer.classList.remove('hidden');
+                }
+            } else {
+                noViewer.classList.remove('hidden');
+            }
+
+            document.getElementById('viewPdfModal').classList.remove('hidden');
+            document.getElementById('viewPdfModal').classList.add('flex');
+        }
+
+        // ================= HM PORTAL FUNCTIONS =================
+        function renderHMPage() {
+            if (!currentUser) return;
+            document.getElementById('hmSchoolName').innerText = currentUser.school;
+            document.getElementById('hmClusterName').innerText = currentUser.cluster;
+
+            const students = getStudents().filter(st => st.school === currentUser.school);
+            renderHMTable(students);
+        }
+
+        function renderHMTable(list) {
+            const tbody = document.getElementById('hmStudentsTable');
+            if (list.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center py-6 text-slate-400">आपकी शाला के लिए अभी तक कोई रिकॉर्ड दर्ज नहीं है।</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = list.map((st, i) => `
+                <tr class="hover:bg-slate-50 border-b">
+                    <td class="p-3 font-bold text-slate-800">${st.dakhilNo}</td>
+                    <td class="p-3 font-semibold text-indigo-700">${st.stName}</td>
+                    <td class="p-3 text-slate-600">${st.father}</td>
+                    <td class="p-3 text-slate-600">${st.mother}</td>
+                    <td class="p-3 text-slate-600">${st.caste || '-'} (${st.category})</td>
+                    <td class="p-3 text-slate-600">${st.dob}</td>
+                    <td class="p-3 text-slate-500 font-mono">${st.pdfNo || '-'}</td>
+                    <td class="p-3 text-center">
+                        <button onclick="viewStudentPdfDirect('${st.dakhilNo}')" class="bg-indigo-600 text-white text-[10px] px-2 py-1 rounded">
+                            <i class="fa-solid fa-eye"></i> देखें
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterHMTable() {
+            const query = document.getElementById('hmRecordFilter').value.toLowerCase();
+            const students = getStudents().filter(st => st.school === currentUser.school && (
+                st.stName.toLowerCase().includes(query) ||
+                st.father.toLowerCase().includes(query) ||
+                st.dakhilNo.toLowerCase().includes(query)
+            ));
+            renderHMTable(students);
+        }
+
+        function openAddStudentModal() {
+            document.getElementById('stHMCluster').value = currentUser.cluster;
+            document.getElementById('stHMSchool').value = currentUser.school;
+            document.getElementById('addStudentModal').classList.remove('hidden');
+            document.getElementById('addStudentModal').classList.add('flex');
+        }
+
+        function saveStudentRecord(e) {
+            e.preventDefault();
+            const fileInput = document.getElementById('stDocFile');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                Swal.fire('त्रुटि', 'कृपया ओरिजिनल दाखिल-खारिज फ़ाइल संलग्न करें।', 'warning');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (evt) {
+                const base64Data = evt.target.result;
+
+                const newRecord = {
+                    block: "साजा",
+                    cluster: currentUser.cluster,
+                    school: currentUser.school,
+                    stName: document.getElementById('stName').value.trim(),
+                    father: document.getElementById('stFather').value.trim(),
+                    mother: document.getElementById('stMother').value.trim(),
+                    caste: document.getElementById('stCaste').value.trim(),
+                    category: document.getElementById('stCategory').value,
+                    dob: document.getElementById('stDOB').value,
+                    dakhilNo: document.getElementById('stDakhilNo').value.trim(),
+                    pdfNo: document.getElementById('stPdfNo').value.trim(),
+                    docData: base64Data
+                };
+
+                const students = getStudents();
+                students.unshift(newRecord);
+                saveStudentsData(students);
+
+                closeModal('addStudentModal');
+                renderHMPage();
+                Swal.fire('सफलता', 'दाखिल खारिज रिकॉर्ड सफलतापूर्वक अपलोड किया गया!', 'success');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function viewStudentPdfDirect(dakhilNo) {
+            const students = getStudents();
+            const idx = students.findIndex(s => s.dakhilNo === dakhilNo);
+            if (idx !== -1) viewStudentPdf(idx);
+        }
+
+        // ================= ADMIN PORTAL FUNCTIONS =================
+        function renderAdminPage() {
+            document.getElementById('adminLoggedInName').innerText = currentUser.name || "एडमिन";
+            document.getElementById('adminLoggedInRole').innerText = currentUser.role || "एडमिन";
+
+            // Hide "Add Admin" button if not Chief Admin
+            if (currentUser.mobile !== CHIEF_ADMIN.mobile) {
+                document.getElementById('addAdminBtn').classList.add('hidden');
+            } else {
+                document.getElementById('addAdminBtn').classList.remove('hidden');
+            }
+
+            refreshAdminViews();
+        }
+
+        function refreshAdminViews() {
+            const admins = getAdmins();
+            const hms = getHMs();
+            const students = getStudents();
+
+            document.getElementById('statAdminCount').innerText = admins.length;
+            document.getElementById('statHMCount').innerText = hms.length;
+            document.getElementById('statSchoolCount').innerText = [...new Set(hms.map(h => h.school))].length;
+            document.getElementById('statStudentCount').innerText = students.length;
+
+            renderAdminHMTable(hms);
+            renderAdminAdminsTable(admins);
+            renderAdminAllRecordsTable(students);
+        }
+
+        function renderAdminHMTable(list) {
+            const tbody = document.getElementById('adminHMTable');
+            tbody.innerHTML = list.map((h, i) => `
+                <tr class="hover:bg-slate-50 border-b">
+                    <td class="p-3 text-slate-600 font-semibold">${h.block}</td>
+                    <td class="p-3 text-slate-600">${h.cluster}</td>
+                    <td class="p-3 font-semibold text-indigo-700">${h.school}</td>
+                    <td class="p-3 text-slate-800 font-medium">${h.hmName}</td>
+                    <td class="p-3 text-slate-600 font-mono">+91 ${h.mobile}</td>
+                    <td class="p-3 text-center">
+                        <button onclick="deleteHM(${i})" class="text-red-500 hover:text-red-700 text-xs">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderAdminAdminsTable(list) {
+            const tbody = document.getElementById('adminAdminsTable');
+            tbody.innerHTML = list.map((a, i) => `
+                <tr class="hover:bg-slate-50 border-b">
+                    <td class="p-3 font-bold text-slate-800">${a.name}</td>
+                    <td class="p-3 text-slate-600 font-mono">+91 ${a.mobile}</td>
+                    <td class="p-3"><span class="bg-amber-100 text-amber-800 text-[10px] px-2 py-0.5 rounded-full font-semibold">${a.role || 'एडमिन'}</span></td>
+                    <td class="p-3 text-center">
+                        ${a.mobile !== CHIEF_ADMIN.mobile ? `
+                            <button onclick="deleteAdmin(${i})" class="text-red-500 hover:text-red-700 text-xs">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        ` : '<span class="text-slate-400 text-[10px]">मुख्य एडमिन (संरक्षित)</span>'}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderAdminAllRecordsTable(list) {
+            const tbody = document.getElementById('adminAllRecordsTable');
+            tbody.innerHTML = list.map((st, i) => `
+                <tr class="hover:bg-slate-50 border-b">
+                    <td class="p-3 text-slate-600"><span class="font-semibold text-slate-800">${st.school}</span><br><span class="text-[10px] text-slate-400">${st.cluster}</span></td>
+                    <td class="p-3 font-bold text-slate-800">${st.dakhilNo}</td>
+                    <td class="p-3 font-semibold text-emerald-700">${st.stName}</td>
+                    <td class="p-3 text-slate-600">${st.father}</td>
+                    <td class="p-3 text-slate-600">${st.dob}</td>
+                    <td class="p-3 text-slate-500 font-mono">${st.pdfNo || '-'}</td>
+                    <td class="p-3 text-center">
+                        <button onclick="viewStudentPdfDirect('${st.dakhilNo}')" class="bg-emerald-600 text-white text-[10px] px-2 py-1 rounded">
+                            <i class="fa-solid fa-eye"></i> देखें
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function switchAdminTab(tab) {
+            ['hms', 'admins', 'records', 'excel'].forEach(t => {
+                document.getElementById(`adminTab${t.charAt(0).toUpperCase() + t.slice(1)}`).classList.add('hidden');
+                const btn = document.getElementById(`tabBtn${t.charAt(0).toUpperCase() + t.slice(1)}`);
+                btn.classList.remove('border-indigo-600', 'text-indigo-600', 'font-bold');
+                btn.classList.add('border-transparent', 'text-slate-500');
+            });
+
+            const activeBtn = document.getElementById(`tabBtn${tab.charAt(0).toUpperCase() + tab.slice(1)}`);
+            activeBtn.classList.add('border-indigo-600', 'text-indigo-600', 'font-bold');
+            activeBtn.classList.remove('border-transparent', 'text-slate-500');
+
+            document.getElementById(`adminTab${tab.charAt(0).toUpperCase() + tab.slice(1)}`).classList.remove('hidden');
+        }
+
+        function openAddHMModal() {
+            document.getElementById('addHMModal').classList.remove('hidden');
+            document.getElementById('addHMModal').classList.add('flex');
+        }
+
+        function saveHM(e) {
+            e.preventDefault();
+            const newHM = {
+                block: "साजा",
+                cluster: document.getElementById('newHMCluster').value.trim(),
+                school: document.getElementById('newHMSchool').value.trim(),
+                hmName: document.getElementById('newHMName').value.trim(),
+                mobile: document.getElementById('newHMMobile').value.trim()
+            };
+
+            const hms = getHMs();
+            hms.push(newHM);
+            saveHMsData(hms);
+
+            closeModal('addHMModal');
+            Swal.fire('सफल प्रविष्टि', 'हेडमास्टर की जानकारी सुरक्षित की गई!', 'success');
+        }
+
+        function deleteHM(index) {
+            Swal.fire({
+                title: 'क्या आप निश्चित हैं?',
+                text: 'इस हेडमास्टर को सूची से हटा दिया जाएगा।',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'हाँ, हटाएँ',
+                cancelButtonText: 'रद्द करें'
+            }).then(res => {
+                if(res.isConfirmed) {
+                    const hms = getHMs();
+                    hms.splice(index, 1);
+                    saveHMsData(hms);
+                    Swal.fire('हटाया गया', 'हेडमास्टर को हटा दिया गया है।', 'success');
+                }
+            });
+        }
+
+        function openAddAdminModal() {
+            document.getElementById('addAdminModal').classList.remove('hidden');
+            document.getElementById('addAdminModal').classList.add('flex');
+        }
+
+        function saveAdmin(e) {
+            e.preventDefault();
+            const newAdmin = {
+                name: document.getElementById('newAdminName').value.trim(),
+                mobile: document.getElementById('newAdminMobile').value.trim(),
+                role: "सहायक एडमिन"
+            };
+
+            const admins = getAdmins();
+            admins.push(newAdmin);
+            saveAdminsData(admins);
+
+            closeModal('addAdminModal');
+            Swal.fire('सफल', 'नया एडमिन सफलतापूर्वक जोड़ा गया!', 'success');
+        }
+
+        function deleteAdmin(index) {
+            const admins = getAdmins();
+            admins.splice(index, 1);
+            saveAdminsData(admins);
+            Swal.fire('हटाया गया', 'एडमिन को हटा दिया गया है।', 'success');
+        }
+
+        // EXCEL BULK UPLOAD HANDLER
+        function handleExcelUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (evt) {
+                try {
+                    const data = new Uint8Array(evt.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const json = XLSX.utils.sheet_to_json(worksheet);
+
+                    if (json.length === 0) {
+                        Swal.fire('खाली फ़ाइल', 'एक्सेल फ़ाइल में कोई डेटा प्राप्त नहीं हुआ।', 'warning');
+                        return;
+                    }
+
+                    const existingHMs = getHMs();
+                    let addedCount = 0;
+
+                    json.forEach(row => {
+                        const cluster = row.Cluster || row.cluster || row['संकुल'] || "संकुल";
+                        const school = row.School || row.school || row['शाला'] || "शा. स्कूल";
+                        const hmName = row.HM_Name || row.hm_name || row['प्रधान पाठक'] || "प्रधान पाठक";
+                        const mobile = String(row.Mobile || row.mobile || row['मोबाइल'] || "").trim();
+
+                        if (mobile && school) {
+                            existingHMs.push({
+                                block: "साजा",
+                                cluster: cluster,
+                                school: school,
+                                hmName: hmName,
+                                mobile: mobile
+                            });
+                            addedCount++;
+                        }
+                    });
+
+                    saveHMsData(existingHMs);
+                    Swal.fire('सफल बल्क अपलोड', `${addedCount} नए हेडमास्टरों की जानकारी सफलतापूर्वक जोड़ी गई!`, 'success');
+                    switchAdminTab('hms');
+                } catch (err) {
+                    Swal.fire('फ़ाइल त्रुटि', 'एक्सेल फ़ाइल को पढ़ने में असमर्थ। कृपया प्रारूप की जांच करें।', 'error');
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        // Initialize App on Page Load
+        window.onload = function () {
+            initDataStore();
+        };
+    </script>
+</body>
+</html>
